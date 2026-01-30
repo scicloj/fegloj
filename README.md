@@ -1,23 +1,26 @@
 # Fegloj
 
-A lightweight, batteries-included Clojure notebook environment combining [clooj](https://github.com/kloimhardt/clooj) (a simple Clojure IDE) with [Clay](https://scicloj.github.io/clay/) (literate programming for Clojure) and [Noj](https://scicloj.github.io/noj/) (a comprehensive data science library).
+A batteries-included Clojure notebook for eval-on-save workflows.
 
 ## Rationale
 
-Fegloj provides an approachable, desktop-based environment for exploratory data analysis and literate programming in Clojure.
+Fegloj is a desktop environment for exploratory data analysis and literate programming in Clojure.
+It combines [clooj](https://github.com/kloimhardt/clooj) (a simple Clojure IDE),
+[Clay](https://scicloj.github.io/clay/) (literate programming for Clojure),
+and [Noj](https://scicloj.github.io/noj/) (a comprehensive data science library).
 It combines:
 
-- **clooj's simplicity**: A lightweight Swing-based editor with syntax highlighting and project navigation
-- **Clay's power**: Rich notebook capabilities for mixing code, visualizations, and narrative
-- **Noj's batteries**: Pre-loaded data science stack including Tablecloth, Fastmath, Scicloj.ml, and more
-- **Zero-config setup**: Launches with a ready-to-use default notebook
+- **clooj**: Swing-based editor with syntax highlighting and project navigation
+- **Clay**: Notebook-style evaluation and rendering
+- **Noj**: Data science stack including Tablecloth, Fastmath, Scicloj.ml, and more
+- **Default notebook**: Creates a starter notebook on first run
 
-**FEGL not REPL**: Fegloj embraces a **File-Eval-GUI-Loop** workflow instead of the traditional REPL.
-Save your file (Cmd+S / Ctrl+S), and Clay automatically re-evaluates it, displaying rich visualizations in your browser.
-Think of it like [Figwheel](https://figwheel.org/) for data science notebooks.
-This encourages literate programming and makes notebooks the primary development artifact.
+**FEGL not REPL**: Fegloj uses a **File-Eval-GUI-Loop** workflow instead of the traditional REPL.
+Your file is the source of truth, and each save triggers evaluation.
+Clay re-evaluates the file and displays results in your browser.
+This is similar to [Figwheel](https://figwheel.org/) but for data science notebooks.
 
-Perfect for data exploration, teaching, or quick prototyping without the complexity of larger IDE setups.
+This supports data exploration, teaching, and prototyping.
 
 ## Requirements
 
@@ -48,34 +51,12 @@ On startup, fegloj:
 3. Clay automatically re-evaluates and displays results in your browser
 4. Iterate!
 
-This gives you instant feedback with rich visualizations, plots, tables, and formatted output.
-
-## Key Features
-
-- **File-Eval-GUI-Loop**: Save-driven workflow instead of manual REPL evaluation
-- **Live Reload**: Clay watches for changes and updates visualizations automatically
-- **Data Science Ready**: Noj library pre-loaded with tools for data manipulation, ML, and visualization
-- **Integrated Editor**: Syntax highlighting, bracket matching, navigation
-- **Project Management**: Browse and edit files in the tree view
-
-## Building from Source
-
-If you want to build fegloj yourself:
-
-```bash
-git clone https://github.com/YOUR_USERNAME/fegloj.git
-cd fegloj
-clj -T:build uber
-java -jar target/fegloj-*-standalone.jar
-```
-
-Requires Clojure CLI tools.
-
 ## Learning Resources
 
 - [Clay Documentation](https://scicloj.github.io/clay/) - Learn about literate programming and visualization
 - [Noj Guide](https://scicloj.github.io/noj/) - Explore the data science toolkit
 - [Clojure for Data Science](https://github.com/scicloj/clojure-data-scrapbook) - Tutorials and examples
+- [Glance](https://scicloj.github.io/glance/) - Just plot
 
 ## License
 
