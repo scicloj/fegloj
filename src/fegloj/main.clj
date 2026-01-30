@@ -6,10 +6,7 @@
             [clojure.java.io :as io])
   (:gen-class))
 
-(defn -main []
-  (clay/make! {:live-reload true})
-  (cc/-show)
-
+(defn default-notebook []
   ;; create default notebook if it doesn't exist
   (let [notebooks-dir (io/file "notebooks")
         default-notebook (io/file notebooks-dir "my_notebook.clj")]
@@ -22,9 +19,10 @@
 
 ;; A clay notebook for exploring Clojure
 
-(+ 1 2 3)")))
+(+ 1 2 3)"))))
 
-  ;; automatically open current directory as a project
+(defn open-notebook []
+    ;; automatically open current directory as a project
   (let [app @cc/current-app
         project-dir (io/file ".")
         abs-path (.getAbsolutePath project-dir)
@@ -39,7 +37,15 @@
       (project/set-tree-selection (:docs-tree app) (.getAbsolutePath clj-file)))
     ;; open the default notebook in the editor
     (when (.exists default-notebook)
-      (cc/restart-doc app default-notebook)))
+      (cc/restart-doc app default-notebook))))
 
+(defn -main []
+  (default-notebook)
+  (clay/make! {:live-reload true
+               :source-path "my_notebook.clj"
+               :base-source-path "notebooks"
+               :base-target-path "temp"})
+  (cc/-show)
+  (open-notebook)
   (println "REPL started")
   (cm/repl))
