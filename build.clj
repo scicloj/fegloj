@@ -68,19 +68,21 @@
   (println "Building uberjar first...")
   (uber nil)
   (let [os-name (System/getProperty "os.name")
-        [installer-type icon-file extra-args]
+        [installer-type extra-args]
         (cond
           (re-find #"(?i)windows" os-name)
-          ["msi" "resources/Clay.svg.png"
-           ["--win-shortcut" "--win-menu" "--win-menu-group" "Fegloj"]]
+          ["msi"
+           ["--icon" "resources/Clay.svg.png"
+            "--win-shortcut" "--win-menu" "--win-menu-group" "Fegloj"]]
 
           (re-find #"(?i)mac" os-name)
-          ["dmg" "resources/Clay.svg.png"
+          ["dmg"
            ["--mac-package-identifier" "com.fegloj.Fegloj"]]
 
           :else ; Linux
-          ["deb" "resources/Clay.svg.png"
-           ["--linux-shortcut" "--linux-menu-group" "Development"
+          ["deb"
+           ["--icon" "resources/Clay.svg.png"
+            "--linux-shortcut" "--linux-menu-group" "Development"
             "--linux-app-category" "Development"
             "--linux-deb-maintainer" "timothypratley@gmail.com"
             "--resource-dir" "package/linux"]])]
@@ -93,7 +95,6 @@
                       "--main-jar" (str (name lib) "-" version "-standalone.jar")
                       "--main-class" "Fegloj"
                       "--type" installer-type
-                      "--icon" icon-file
                       "--app-version" version
                       "--vendor" "Fegloj"
                       "--description" "Fegloj - A Clojure notebook environment"
