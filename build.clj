@@ -10,6 +10,11 @@
 ;;   Linux:   sudo dpkg -i target/package/fegloj_0.1.0-SNAPSHOT_amd64.deb
 ;;   Windows: Run the .msi installer from target/package/
 ;;   macOS:   Open the .dmg from target/package/ and drag to Applications
+;;
+;; To create a GitHub release with installers for all platforms:
+;;   git tag v0.1.0
+;;   git push origin v0.1.0
+;;   (GitHub Actions will automatically build installers for Linux/Windows/macOS)
 
 (ns build
   (:require [clojure.tools.build.api :as b]

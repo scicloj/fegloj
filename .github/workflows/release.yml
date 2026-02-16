@@ -37,24 +37,10 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Install Clojure tools (Linux/macOS)
-        if: runner.os != 'Windows'
+      - name: Install Clojure tools
         uses: DeLaGuardo/setup-clojure@12.5
         with:
           cli: latest
-
-      - name: Install Clojure tools (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          Invoke-WebRequest -Uri https://github.com/clojure/brew-install/releases/latest/download/windows-install.ps1 -OutFile windows-install.ps1
-          .\windows-install.ps1
-        shell: powershell
-
-      - name: Build uberjar
-        run: clojure -T:build uber
-
-      - name: Build installer (Linux)
-        if: runner.os == 'Linux'
         run: |
           clojure -T:build jpackage-installer
 
