@@ -6,6 +6,5 @@
         org.scicloj/noj  {:mvn/version "2-beta19.1"}
         org.slf4j/slf4j-nop {:mvn/version "2.0.17"}
         org.scicloj/glance {:mvn/version "0.1.0-alpha2"}}
- :aliases {:build {:deps {io.github.clojure/tools.build {:git/tag "v0.10.12"
-                                                         :git/sha "97c5562"}}
+ :aliases {:build {:deps {io.github.clojure/tools.build {:mvn/version "0.10.12"}}
                    :ns-default build}}}
