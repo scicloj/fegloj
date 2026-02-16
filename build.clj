@@ -78,8 +78,7 @@
         (cond
           (re-find #"(?i)windows" os-name)
           ["msi"
-           ["--icon" "resources/Clay.svg.png"
-            "--win-shortcut" "--win-menu" "--win-menu-group" "Fegloj"]]
+           ["--win-shortcut" "--win-menu" "--win-menu-group" "Fegloj"]]
 
           (re-find #"(?i)mac" os-name)
           ["dmg"
