@@ -38,9 +38,7 @@
            :class-dir class-dir
            :uber-file uber-file
            :main 'Fegloj
-           :exclude-patterns ["META-INF/license/.*"
-                              "META-INF/.*\\.RSA"
-                              "META-INF/.*\\.SF"]}))
+           :exclude-patterns ["META-INF/.*"]}))
 
 (defn jpackage [_]
   (println "Building uberjar first...")
