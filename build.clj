@@ -18,10 +18,16 @@
 
 (ns build
   (:require [clojure.tools.build.api :as b]
-            [clojure.java.shell :as sh]))
+            [clojure.java.shell :as sh]
+            [clojure.string]))
 
 (def lib 'fegloj)
-(def version "0.1.0-SNAPSHOT")
+(def version
+  (let [git-describe (:out (sh/sh "git" "describe" "--tags" "--abbrev=0"))
+        tag (clojure.string/trim git-describe)]
+    (if (seq tag)
+      (clojure.string/replace tag #"^v" "")  ;; Remove 'v' prefix if present
+      "0.1.0-SNAPSHOT")))
 (def class-dir "target/classes")
 (def basis (b/create-basis {:project "deps.edn"}))
 (def uber-file (format "target/%s-%s-standalone.jar" (name lib) version))
