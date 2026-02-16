@@ -31,11 +31,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '25'
 
       - name: Install Clojure tools
         uses: DeLaGuardo/setup-clojure@12.5
