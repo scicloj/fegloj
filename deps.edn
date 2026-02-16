@@ -1,13 +1,11 @@
 ;; Build the uberjar with: clj -T:build uber
 ;; Run it with: java -jar target/fegloj-*-standalone.jar
 
-{:deps {org.scicloj/clay {:mvn/version "2.0.6"}
+{:paths ["src" "resources"]
+ :deps {org.scicloj/clay {:mvn/version "2.0.6"}
         org.scicloj/noj  {:mvn/version "2-beta19.1"}
         org.slf4j/slf4j-nop {:mvn/version "2.0.17"}
-        org.scicloj/glance {:mvn/version "0.1.0-alpha2"}
-        kloimhardt/clooj {:local/root "../clooj"
-                          #_:git/url "git@github.com:kloimhardt/clooj.git"
-                          #_:git/sha "fd25650f5c468cf1dbf4e3812f4ad01ea3dccae6"}}
+        org.scicloj/glance {:mvn/version "0.1.0-alpha2"}}
  :aliases {:build {:deps {io.github.clojure/tools.build {:git/tag "v0.10.12"
                                                          :git/sha "97c5562"}}
                    :ns-default build}}}

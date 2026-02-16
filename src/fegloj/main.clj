@@ -1,10 +1,12 @@
 (ns fegloj.main
-  (:require [clooj.core :as cc]
-            [clooj.project :as project]
-            [scicloj.clay.v2.api :as clay]
+  (:require [scicloj.clay.v2.api :as clay]
             [clojure.main :as cm]
             [clojure.java.io :as io])
-  (:gen-class))
+  (:import [javax.swing JTextArea JScrollPane JButton JPanel JFrame WindowConstants]
+           [java.awt BorderLayout]
+           [java.awt.event ActionListener]
+           [java.io Writer PrintWriter])
+  (:gen-class :name Fegloj))
 
 (defn default-notebook []
   ;; create default notebook if it doesn't exist
@@ -21,31 +23,92 @@
 
 (+ 1 2 3)"))))
 
-(defn open-notebook []
-    ;; automatically open current directory as a project
-  (let [app @cc/current-app
-        project-dir (io/file ".")
-        abs-path (.getAbsolutePath project-dir)
-        default-notebook (io/file "notebooks" "my_notebook.clj")]
-    (project/add-project app abs-path)
-    (project/update-project-tree (:docs-tree app))
-    (when-let [clj-file (or (-> (io/file project-dir "src")
-                               .getAbsolutePath
-                               (project/get-code-files ".clj")
-                               first)
-                            project-dir)]
-      (project/set-tree-selection (:docs-tree app) (.getAbsolutePath clj-file)))
-    ;; open the default notebook in the editor
-    (when (.exists default-notebook)
-      (cc/restart-doc app default-notebook))))
+(defn tee-writer
+  "Creates a writer that writes to multiple writers"
+  [& writers]
+  (proxy [Writer] []
+    (write
+      ([cbuf off len]
+       (doseq [w writers]
+         (.write w cbuf off len)))
+      ([x]
+       (doseq [w writers]
+         (.write w x))))
+    (flush []
+      (doseq [w writers]
+        (.flush w)))
+    (close []
+      (doseq [w writers]
+        (.close w)))))
+
+(defn text-area-writer
+  "Creates a writer that appends to a JTextArea"
+  [log-area]
+  (proxy [Writer] []
+    (write
+      ([cbuf off len]
+       (if (string? cbuf)
+         (.append log-area cbuf)
+         (.append log-area (String. ^chars cbuf ^int off ^int len))))
+      ([x]
+       (.append log-area (str x))))
+    (flush [])
+    (close [])))
+
+(defn show-quit-button
+  "Shows a simple quit button for when running without a terminal"
+  []
+  (let [log-area (doto (JTextArea. 20 50)
+                   (.setEditable false)
+                   (.setLineWrap true)
+                   (.setWrapStyleWord true))
+        scroll-pane (JScrollPane. log-area)
+        browse-button (doto (JButton. "Open Clay Browser")
+                        (.addActionListener
+                          (reify ActionListener
+                            (actionPerformed [_ _] (clay/browse!)))))
+        quit-button (doto (JButton. "Quit Fegloj")
+                      (.addActionListener
+                        (reify ActionListener
+                          (actionPerformed [_ _] (System/exit 0)))))
+        button-panel (doto (JPanel.)
+                       (.add browse-button)
+                       (.add quit-button))
+        panel (doto (JPanel. (BorderLayout.))
+                (.add scroll-pane BorderLayout/CENTER)
+                (.add button-panel BorderLayout/SOUTH))
+        frame (doto (JFrame. "Fegloj")
+                (.setDefaultCloseOperation WindowConstants/EXIT_ON_CLOSE))
+        icon-url (io/resource "Clay.svg.png")]
+    ;; Tee output to both terminal and log area
+    (let [log-w (text-area-writer log-area)]
+      (alter-var-root #'*out* (constantly (PrintWriter. (tee-writer *out* log-w) true)))
+      (alter-var-root #'*err* (constantly (PrintWriter. (tee-writer *err* log-w) true))))
+    (when icon-url
+      (.setIconImage frame (javax.imageio.ImageIO/read (io/input-stream icon-url))))
+    (doto frame
+      (.add panel)
+      (.setSize 600 400)
+      (.setLocationRelativeTo nil)
+      (.setVisible true))))
 
 (defn -main []
+  (println "Starting Fegloj...")
+  (show-quit-button)
   (default-notebook)
+  (println "Starting Clay with live-reload...")
   (clay/make! {:live-reload true
                :source-path "my_notebook.clj"
                :base-source-path "notebooks"
                :base-target-path "temp"})
-  (cc/-show)
-  (open-notebook)
-  (println "REPL started")
-  (cm/repl))
+  (println "\nFegloj is running!")
+  (println "Edit notebooks/my_notebook.clj and save to see updates in your browser.")
+  ;; Only start REPL if running in a terminal (not double-clicked from GUI)
+  (if (System/console)
+    (do
+      (println "\nREPL ready:")
+      (cm/repl))
+    (do
+      (println "\nNo terminal detected. Use the Quit button to exit.")
+      ;; Keep the app running
+      (while true (Thread/sleep 10000)))))
