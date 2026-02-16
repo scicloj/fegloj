@@ -41,19 +41,12 @@ jobs:
         uses: DeLaGuardo/setup-clojure@12.5
         with:
           cli: latest
-        run: |
-          clojure -T:build jpackage-installer
 
-      - name: Build installer (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          clojure -T:build jpackage-installer
-        shell: bash
+      - name: Build uberjar
+        run: clojure -T:build uber
 
-      - name: Build installer (macOS)
-        if: runner.os == 'macOS'
-        run: |
-          clojure -T:build jpackage-installer
+      - name: Build installer
+        run: clojure -T:build jpackage-installer
 
       - name: Upload installer
         uses: actions/upload-artifact@v4
